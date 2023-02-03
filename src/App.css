@@ -1,0 +1,6 @@
+.newform {
+    display:flex;
+    flex-direction: column;
+    width: 20rem;
+    
+}
