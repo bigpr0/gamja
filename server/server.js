@@ -1,12 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors')
 
 
 const app = express();
 
+app.use(
+  cors({
+    origin:"http://localhost:3000",
+    mothods:["GET,","POST","PUT","DELETE"]
+  })
+)
+
 app.use(express.json())
 // Connect to MongoDB
-mongoose.connect('mongodb://mongo:6rMsEiZ5ceO79A639pOy@containers-us-west-56.railway.app:5899', {
+mongoose.connect("mongodb://mongo:PJkaEsurptK22YhOt59M@containers-us-west-151.railway.app:6887", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -110,7 +118,7 @@ app.get('/api/customers/:id', async (req, res) => {
   }
 });
 
-// POST a new item
+// POST a new customer
 app.post('/api/customers', async (req, res) => {
   try {
     const customer = new Customer({

@@ -6,11 +6,15 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import{useFormik} from "formik"
 import * as Yup from "yup"
+import axios from 'axios';
 
 
 
 
 const NewUserForm = () => {
+
+const [showModal, setShowModal] = useState(false);
+const [modalMessage, setModalMessage] = useState("");
   
 const phoneRegExp = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3,4})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
 
@@ -31,18 +35,29 @@ const validationSchema = Yup.object().shape({
     },
     onSubmit:(values)=>{
       console.log(JSON.stringify(values))
+      axios.post('http://localhost:5000/api/customers', values)
+      .then(res => {
+        console.log(res);
+        setModalMessage("Success: Data retrieved successfully.");
+        setShowModal(true);
+      })
+      .catch(err => {
+        console.error(err);
+        setModalMessage("Error: " + err.message);
+        setShowModal(true);
+      });
     },
     validationSchema:validationSchema,
     validateOnChange:false
   })
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Submit form data to the server, for example:
-    // axios.post('/api/users', formData)
-    //   .then(res => console.log(res))
-    //   .catch(err => console.error(err));
-  };
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   // Submit form data to the server, for example:
+  //   axios.post('localhost/api/customers', formData)
+  //      .then(res => console.log(res))
+  //      .catch(err => console.error(err));
+  // };
 
 
 
@@ -104,7 +119,13 @@ const validationSchema = Yup.object().shape({
           helperText={formik.touched.phoneNumber&&formik.errors.phoneNumber}
         />
         <br></br>
-        <Button type="submit" variant="outlined" margin="normal" size="large">Submit</Button>
+        <Button type="submit" variant="outlined" margin="normal" size="large" onSubmit={formik.handleSubmit}>Submit</Button>
+        {showModal && (
+        <div>
+          <p>{modalMessage}</p>
+          <Button onClick={() => setShowModal(false)}>Close</Button>
+        </div>
+      )}
 
       </form>
       </div>

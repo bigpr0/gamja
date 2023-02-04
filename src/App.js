@@ -3,7 +3,6 @@ import OrderForm from './components/OrderForm';
 import NewUserForm from './components/NewUserForm';
 import ResponsiveDrawer from './components/ResponsiveDrawer';
 import HomeCalendar from './components/HomeCalendar';
-import TestGrid from './components/TestGrid';
 
 
 
@@ -33,7 +32,7 @@ function App() {
           <Route path="/addCustomer" element={<NewUserForm/>}/>
           <Route path="/customers" element={<Customers/>}/>
           <Route path="/neworder" element={<OrderForm/>}/>
-          <Route path="/orders" element={<TestGrid/>}/>
+          <Route path="/orders" />
         </Route>
       </Routes>
 
