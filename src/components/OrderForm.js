@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -12,6 +12,13 @@ import * as Yup from "yup"
 import axios from 'axios';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+
+
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -50,7 +57,24 @@ export default function OrderForm() {
   const [value, setValue] = useState(null);
   const [orderItems, setOrderItems] = useState([{ name: "", qty: "", price: "" }]);
 
+  const [customerId, setCustomerId] = useState("");
+  const [customerName, setCustomerName] = useState("");
+
   const phoneRegExp = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3,4})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+
+
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/customers')
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
 
 
 
@@ -70,6 +94,7 @@ export default function OrderForm() {
 
   const formik = useFormik({
     initialValues: {
+      customerId:"",
       customerName: "",
       orderStatus: "",
       orderOccasion: "",
@@ -87,6 +112,8 @@ export default function OrderForm() {
     onSubmit: (values) => {
       values.orderItems = [...orderItems]
       values.dueDate = value
+      values.customerId=customerId
+      values.customerName = customerName
       console.log(JSON.stringify(values))
       axios.post('http://localhost:5000/api/orders', values)
         .then(res => {
@@ -128,6 +155,24 @@ export default function OrderForm() {
 
   };
 
+  const handleCustomerChange = (e) => {
+    
+    setCustomerId(e.target.value)
+    setCustomerName(getValue(data,e.target.value,'firstName')+" "+getValue(data,e.target.value,'lastName'))
+    formik.setFieldValue('customerPhone',getValue(data,e.target.value,'phoneNumber'));
+    formik.setFieldValue('customerEmail',getValue(data,e.target.value,'email'));
+
+    formik.handleChange(e)
+
+  }
+
+
+  
+const getValue = (data, id, key) => {
+  const item = data.find(item => item._id === id);
+  return item ? item[key] : undefined;
+};
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <h1>Create New Order</h1>
@@ -149,7 +194,37 @@ export default function OrderForm() {
               </Typography>
             </Grid>
             <Grid xs={12} md={4}>
-              <TextField
+              <FormControl variant='standard' fullWidth sx={{ mt: 2 }}>
+                <InputLabel id="customerName-label">Customer Name</InputLabel>
+                <Select
+                  labelId="customerName-label"
+                  id="customerName"
+                  name="customerName"
+                  fullWidth
+                  variant='standard'
+                  value={formik.values.customerName}
+                  // onChange={(e) => {
+                  //   formik.handleChange(e);
+                  //   handleCustomerChange(e);
+                  // }}
+                  // onBlur={(e) => {
+                  //   formik.handleChange(e);
+                  //   handleCustomerChange(e);
+                  // }}
+                  onBlur={
+                    handleCustomerChange
+                  }
+                  onChange={handleCustomerChange}
+                >
+                  {data.map(item => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.firstName + " " + item.lastName}
+                    </MenuItem>
+                  ))}
+                </Select>
+
+              </FormControl>
+              {/* <TextField
                 id="customerName"
                 name="customerName"
                 label="Customer Name"
@@ -161,7 +236,7 @@ export default function OrderForm() {
                 onBlur={formik.handleBlur}
                 error={formik.touched.customerName && Boolean(formik.errors.customerName)}
                 helperText={formik.touched.customerName && formik.errors.customerName}
-              />
+              /> */}
             </Grid>
             <Grid xs={12} md={4}>
               <TextField
@@ -356,7 +431,7 @@ export default function OrderForm() {
 
             {orderItems.map((item, index) => (
 
-              <>
+              <Box sx={{flexGrow: 1 , display: 'flex' }} key={index}>
                 <Grid xs={12} md={8}>
                   <TextField
                     name="name"
@@ -368,7 +443,6 @@ export default function OrderForm() {
                     fullWidth
                     onChange={(e) => handleInputChange(e, index)}
                   />
-
                 </Grid>
                 <Grid xs={4} md={1}>
                   <TextField
@@ -406,7 +480,8 @@ export default function OrderForm() {
                     <BackspaceIcon />
                   </Button>
                 </Grid>
-              </>
+
+              </Box>
             ))}
 
 
@@ -440,9 +515,9 @@ export default function OrderForm() {
                 })}
                 fullWidth
                 variant='standard'
-           
+
                 disabled
-                >
+              >
               </TextField>
 
             </Grid>

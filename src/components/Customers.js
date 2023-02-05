@@ -11,7 +11,6 @@ const VISIBLE_FIELDS = ['firstName', 'lastName', 'email', 'phoneNumber'];
 
 
 const columns = [
-    { field: '_id', headerName: 'ID', width: 90 },
     {
       field: 'firstName',
       headerName: 'First name',
