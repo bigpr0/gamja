@@ -43,7 +43,7 @@ export default function Customers() {
 
     React.useEffect(() => {
       axios
-        .get("http://localhost:5000/api/customers")
+        .get("https://gamja-server-production.up.railway.app/api/customers")
         .then(response => {
           setData(response.data);
         })

@@ -44,7 +44,7 @@ const NewUserForm = () => {
     },
     onSubmit: (values) => {
       console.log(JSON.stringify(values))
-      axios.post('http://localhost:5000/api/customers', values)
+      axios.post('https://gamja-server-production.up.railway.app/api/customers', values)
         .then(res => {
           console.log(res);
           setModalMessage("Success: Data retrieved successfully.");

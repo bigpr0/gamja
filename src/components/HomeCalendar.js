@@ -1,7 +1,12 @@
+import React, {useState,useEffect} from 'react'
+
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import listPlugin from '@fullcalendar/list'
 import timeGridPlugin from '@fullcalendar/timegrid'
+
+
+import axios from "axios";
 
 const events = [
   {     title: 'Meeting', start: new Date() },
@@ -19,6 +24,29 @@ const events = [
 ]
 
 export default function HomeCalendar() {
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("https://gamja-server-production.up.railway.app/api/orders")
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
+
+  const pullEvents=data.map(item=>({
+
+    title:item.delivery+" for "+item.customerName,
+    start:item.dueDate
+
+  }))
+
+
   return (
     <div >
 
@@ -32,7 +60,7 @@ export default function HomeCalendar() {
         initialView='listWeek'
         weekends={true}
         height="auto"
-        events={events}
+        events={pullEvents}
         eventContent={renderEventContent}
       />
     </div>

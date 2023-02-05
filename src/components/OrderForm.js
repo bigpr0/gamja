@@ -67,7 +67,7 @@ export default function OrderForm() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/customers')
+    axios.get('https://gamja-server-production.up.railway.app/api/customers')
       .then(response => {
         setData(response.data);
       })
@@ -115,7 +115,7 @@ export default function OrderForm() {
       values.customerId=customerId
       values.customerName = customerName
       console.log(JSON.stringify(values))
-      axios.post('http://localhost:5000/api/orders', values)
+      axios.post('https://gamja-server-production.up.railway.app/api/orders', values)
         .then(res => {
           console.log(res);
           setModalMessage("Success: Data retrieved successfully.");
