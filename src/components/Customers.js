@@ -1,13 +1,9 @@
-import * as React from 'react';
+import React,{useState,useEffect} from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import axios from "axios";
-import { useDemoData } from '@mui/x-data-grid-generator';
+import { useNavigate } from 'react-router-dom';
 
-
-
-
-const VISIBLE_FIELDS = ['firstName', 'lastName', 'email', 'phoneNumber'];
 
 
 const columns = [
@@ -39,9 +35,11 @@ const columns = [
 
 export default function Customers() {
 
-    const [data, setData] = React.useState([]);
+    const [data, setData] = useState([]);
 
-    React.useEffect(() => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
       axios
         .get("https://gamja-server-production.up.railway.app/api/customers")
         .then(response => {
@@ -52,6 +50,10 @@ export default function Customers() {
         });
     }, []);
   
+    const handleRowClick = (row) => {
+      navigate("/editcustomer/"+row.id)
+
+    };
 
 
 
@@ -64,6 +66,7 @@ export default function Customers() {
         pageSize={10}
         rowsPerPageOptions={[10,20]}
         autoHeight
+        onRowClick={handleRowClick}
       />
     </Box>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -8,6 +8,7 @@ import Divider from '@mui/material/Divider';
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 
 
@@ -20,10 +21,42 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-const NewUserForm = () => {
+const EditUserForm = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+
+  const [customerData,SetCustomerData]=useState([]);
+
+  const { id } = useParams();
+  const [data, setData] = useState(null);
+ 
+
+  const getValue = (data, id, key) => {
+    const item = data.find(item => item._id === id);
+    return item ? item[key] : undefined;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await axios.get(`https://gamja-server-production.up.railway.app/api/customers/${id}`);
+        setData(result.data);
+
+        formik.setFieldValue('firstName',result.data.firstName);
+        formik.setFieldValue('lastName',result.data.lastName);
+        formik.setFieldValue('phoneNumber',result.data.phoneNumber);
+        formik.setFieldValue('email',result.data.email);
+
+
+
+        
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   const phoneRegExp = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3,4})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
 
@@ -38,13 +71,13 @@ const NewUserForm = () => {
     initialValues: {
       firstName: "",
       lastName: "",
-      email: "",
+      email:"",
       phoneNumber: ""
 
     },
     onSubmit: (values) => {
       console.log(JSON.stringify(values))
-      axios.post('https://gamja-server-production.up.railway.app/api/customers', values)
+      axios.put(`https://gamja-server-production.up.railway.app/api/customers/${id}`, values)
         .then(res => {
           console.log(res);
           setModalMessage("Success: Data retrieved successfully.");
@@ -66,7 +99,7 @@ const NewUserForm = () => {
 
     <Box display="flex" alignItems="center" flexDirection={"column"}>
       <Item>
-      <h1>Add New Customer</h1>
+      <h1>Edit Existing Customer</h1>
       <Divider />
       <div className='newform'>
         <form onSubmit={formik.handleSubmit} >
@@ -138,4 +171,4 @@ const NewUserForm = () => {
   );
 };
 
-export default NewUserForm;
+export default EditUserForm;

@@ -3,6 +3,9 @@ import OrderForm from './components/OrderForm';
 import NewUserForm from './components/NewUserForm';
 import HomeCalendar from './components/HomeCalendar';
 import Orders from './components/Orders';
+import EditUserForm from './components/EditUserForm';
+import Map from './components/Map';
+import EditOrderForm from './components/EditOrderForm';
 
 
 
@@ -33,7 +36,12 @@ function App() {
           <Route path="/addCustomer" element={<NewUserForm/>}/>
           <Route path="/customers" element={<Customers/>}/>
           <Route path="/neworder" element={<OrderForm/>}/>
+
           <Route path="/orders" element={<Orders/>}/>
+          <Route path="/editcustomer/:id" element={<EditUserForm/>}/>
+          <Route path="/editorder/:id" element={<EditOrderForm/>}/>
+          <Route path="/map" element={<Map/>}/>
+          
         </Route>
       </Routes>
 

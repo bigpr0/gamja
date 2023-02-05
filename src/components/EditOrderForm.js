@@ -12,7 +12,7 @@ import * as Yup from "yup"
 import axios from 'axios';
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-
+import { useParams } from 'react-router-dom';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -49,7 +49,7 @@ const useSubtotal = (items) => {
   return subtotal;
 };
 
-export default function OrderForm() {
+export default function EditOrderForm() {
 
 
   const [showModal, setShowModal] = useState(false);
@@ -63,13 +63,33 @@ export default function OrderForm() {
   const phoneRegExp = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3,4})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
 
 
+  const { id } = useParams();
 
-  const [data, setData] = useState([]);
+
+  const [initData, setInitData] = useState([]);
 
   useEffect(() => {
-    axios.get('https://gamja-server-production.up.railway.app/api/customers')
-      .then(response => {
-        setData(response.data);
+    axios.get(`https://gamja-server-production.up.railway.app/api/orders/${id}`)
+      .then(result => {
+        setInitData(result.data);
+
+
+        formik.setFieldValue('customerName',result.data.customerName)
+        formik.setFieldValue('orderStatus', result.data.orderStatus)
+        formik.setFieldValue('orderOccasion', result.data.orderOccasion )
+        formik.setFieldValue('customerPhone', result.data.customerPhone)
+        formik.setFieldValue('customerEmail', result.data.customerEmail)
+        formik.setFieldValue('dueDate', result.data.dueDate)
+        formik.setFieldValue('recipient',result.data.recipient )
+        formik.setFieldValue('recipientPhone', result.data.recipientPhone)
+        formik.setFieldValue('delivery', result.data.delivery)
+        formik.setFieldValue('deliveryAddress', result.data.deliveryAddress)
+        setOrderItems(result.data.orderItems)
+        setValue(result.data.dueDate)
+
+
+
+
       })
       .catch(error => {
         console.error(error);
@@ -113,9 +133,8 @@ export default function OrderForm() {
       values.orderItems = [...orderItems]
       values.dueDate = value
       values.customerId=customerId
-      values.customerName = customerName
       console.log(JSON.stringify(values))
-      axios.post('https://gamja-server-production.up.railway.app/api/orders', values)
+      axios.put(`https://gamja-server-production.up.railway.app/api/orders/${id}`, values)
         .then(res => {
           console.log(res);
           setModalMessage("Success: Data retrieved successfully.");
@@ -155,27 +174,27 @@ export default function OrderForm() {
 
   };
 
-  const handleCustomerChange = (e) => {
+//   const handleCustomerChange = (e) => {
     
-    setCustomerId(e.target.value)
-    setCustomerName(getValue(data,e.target.value,'firstName')+" "+getValue(data,e.target.value,'lastName'))
-    formik.setFieldValue('customerPhone',getValue(data,e.target.value,'phoneNumber'));
-    formik.setFieldValue('customerEmail',getValue(data,e.target.value,'email'));
+//     setCustomerId(e.target.value)
+//     setCustomerName(getValue(data,e.target.value,'firstName')+" "+getValue(data,e.target.value,'lastName'))
+//     formik.setFieldValue('customerPhone',getValue(data,e.target.value,'phoneNumber'));
+//     formik.setFieldValue('customerEmail',getValue(data,e.target.value,'email'));
 
-    formik.handleChange(e)
+//     formik.handleChange(e)
 
-  }
+//   }
 
 
   
-const getValue = (data, id, key) => {
-  const item = data.find(item => item._id === id);
-  return item ? item[key] : undefined;
-};
+// const getValue = (data, id, key) => {
+//   const item = data.find(item => item._id === id);
+//   return item ? item[key] : undefined;
+// };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <h1>Create New Order</h1>
+      <h1>Edit Existing Order</h1>
       <form
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
@@ -194,40 +213,11 @@ const getValue = (data, id, key) => {
               </Typography>
             </Grid>
             <Grid xs={12} md={4}>
-              <FormControl variant='standard' fullWidth sx={{ mt: 2 }}>
-                <InputLabel id="customerName-label">Customer Name</InputLabel>
-                <Select
-                  labelId="customerName-label"
-                  id="customerName"
-                  name="customerName"
-                  fullWidth
-                  variant='standard'
-                  value={formik.values.customerName}
-                  // onChange={(e) => {
-                  //   formik.handleChange(e);
-                  //   handleCustomerChange(e);
-                  // }}
-                  // onBlur={(e) => {
-                  //   formik.handleChange(e);
-                  //   handleCustomerChange(e);
-                  // }}
-                  onBlur={
-                    handleCustomerChange
-                  }
-                  onChange={handleCustomerChange}
-                >
-                  {data.map(item => (
-                    <MenuItem key={item._id} value={item._id}>
-                      {item.firstName + " " + item.lastName}
-                    </MenuItem>
-                  ))}
-                </Select>
 
-              </FormControl>
-              {/* <TextField
+            <TextField
                 id="customerName"
                 name="customerName"
-                label="Customer Name"
+                label="customer Name"
                 margin="normal"
                 variant="standard"
                 fullWidth
@@ -236,7 +226,10 @@ const getValue = (data, id, key) => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.customerName && Boolean(formik.errors.customerName)}
                 helperText={formik.touched.customerName && formik.errors.customerName}
-              /> */}
+              />
+
+
+
             </Grid>
             <Grid xs={12} md={4}>
               <TextField
@@ -431,8 +424,8 @@ const getValue = (data, id, key) => {
 
             {orderItems.map((item, index) => (
 
-              <Box sx={{flexGrow: 1, display:'flex'}} key={index}>
-                <Grid xs={12} md={8} xl={8}>
+              <Box sx={{flexGrow: 1 , display: 'flex' }} key={index}>
+                <Grid xs={12} md={8}>
                   <TextField
                     name="name"
                     id={`name${index}`}
@@ -444,7 +437,7 @@ const getValue = (data, id, key) => {
                     onChange={(e) => handleInputChange(e, index)}
                   />
                 </Grid>
-                <Grid xs={4} md={1} xl={1}>
+                <Grid xs={4} md={1}>
                   <TextField
                     name="qty"
                     id={`qty${index}`}
@@ -458,7 +451,7 @@ const getValue = (data, id, key) => {
                   />
                 </Grid>
 
-                <Grid xs={4} md={2} xl={2}>
+                <Grid xs={4} md={2}>
                   <TextField
                     name="price"
                     id={`price${index}`}
@@ -475,7 +468,7 @@ const getValue = (data, id, key) => {
                   />
                 </Grid>
 
-                <Grid xs={4} md={1} xl={1}>
+                <Grid xs={4} md={1}>
                   <Button type="button" fullWidth onClick={() => handleRemoveItem(index)}>
                     <BackspaceIcon />
                   </Button>
@@ -532,7 +525,6 @@ const getValue = (data, id, key) => {
                 </div>
               )}
             </Grid>
-
 
 
 

@@ -1,32 +1,52 @@
 import React, {useState,useEffect} from 'react';
 import Box from '@mui/material/Box';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
+
 
 const columns = [
     //{ field: '_id', headerName: 'ID' },
     {
       field: 'customerName',
-      headerName: 'Customer name',
-      width: 200,
+      headerName: 'Customer',
+
       editable: true,
     },
     {
       field: 'recipient',
       headerName: 'Recipient',
-      width: 200,
+
       editable: true,
     },
     {
       field: 'deliveryAddress',
-      headerName: 'deliveryAddress',
+      headerName: 'Delivery Address',
       width:250,
       editable: true,
     },
+
+    {
+        field: 'delivery',
+        headerName: 'Delivery',
+        width: 200,
+        editable: true,
+    },
+
+
+    {
+        field: 'dueDate',
+        headerName: 'Due Date',
+        width:250,
+        editable: true,
+        valueFormatter: params => new Date(params?.value).toLocaleString()
+
+    },
     {
         field: 'orderStatus',
-        headerName: 'Order Status',
-        width: 200,
+        headerName: 'Status',
+        width: 100,
         editable: true,
     },
   ];
@@ -37,7 +57,7 @@ export default function Orders() {
 
     useEffect(() => {
       axios
-        .get("http://localhost:5000/api/orders")
+        .get("https://gamja-server-production.up.railway.app/api/orders")
         .then(response => {
           setData(response.data);
         })
@@ -45,7 +65,18 @@ export default function Orders() {
           console.error(error);
         });
     }, []);
+
+
+    
+    const navigate = useNavigate();
+
+    const handleRowClick = (row) => {
+        navigate("/editorder/"+row.id)
   
+      };
+
+  
+
 
 
 
@@ -55,9 +86,11 @@ export default function Orders() {
         rows={data}
         columns={columns}
         getRowId={(data) => data._id}
+
         pageSize={10}
         rowsPerPageOptions={[10,20]}
         autoHeight
+        onRowClick={handleRowClick}
       />
     </Box>
   );

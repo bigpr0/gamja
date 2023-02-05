@@ -6,13 +6,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -26,6 +24,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import GroupsIcon from '@mui/icons-material/Groups';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
+import RouteIcon from '@mui/icons-material/Route';
 
 
 
@@ -161,12 +160,25 @@ function SideBar(props) {
             </ListItemText>
           </ListItemButton>
         </ListItem>
+
+        <Divider />
+
+        
+        <ListItem key='map' disablePadding component={Link} to={'/map'} button selected={"/map" === path}>
+          <ListItemButton>
+            <ListItemIcon>
+              <RouteIcon/>
+            </ListItemIcon>
+            <ListItemText>
+              Route Planning
+            </ListItemText>
+          </ListItemButton>
+        </ListItem>
       
       
 
       </List>
 
-      <Divider />
 
 
 
@@ -175,18 +187,8 @@ function SideBar(props) {
 
 
 
-      {/* <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List> */}
+
+
     </div>
   );
 
