@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { useFormik } from "formik"
 import * as Yup from "yup"
-
+import axios from 'axios';
 //Datetime picker
 
 import dayjs from 'dayjs';
@@ -30,8 +30,68 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function OrderForm() {
+
+
+  const [showModal, setShowModal] = React.useState(false);
+  const [modalMessage, setModalMessage] = React.useState("");
   const [value, setValue] = React.useState(null);
-  const [orderItems, setOrderItems] = React.useState([{ name: "", price: "", qty: "" }]);
+  const [orderItems, setOrderItems] = React.useState([{ name: "", qty: "" , price: "" }]);
+
+  const phoneRegExp = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3,4})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+
+
+  const validationSchema = Yup.object().shape({
+    customerName: Yup.string().required('Customer name is required'),
+    //dueDate: Yup.string().required('Due Date is required'),
+
+    //recipient:Yup.string().required('Recipeint is required'),
+    //recipientPhone:Yup.string().matches(phoneRegExp, 'Phone number is not valid').required('Phone number is required'),
+
+  });
+
+  
+  const formik = useFormik({
+    initialValues: {
+      customerName: "",
+      orderStatus: "",
+      orderOccasion: "",
+      customerPhone: "",
+      customerEmail: "",
+      dueDate: "",
+      recipient: "",
+      recipientPhone: "",
+      delivery: "",
+      deliveryAddress: "",
+      orderItems: {
+        name: "",
+        qty: "",
+        price:"",
+      },
+
+
+    },
+    onSubmit: (values) => {
+      console.log("hello")
+      console.log(JSON.stringify(values))
+      axios.post('http://localhost:5000/api/orders', values)
+        .then(res => {
+          console.log(res);
+          setModalMessage("Success: Data retrieved successfully.");
+          setShowModal(true);
+        })
+        .catch(err => {
+          console.error(err);
+          setModalMessage("Error: " + err.message);
+          setShowModal(true);
+        });
+    },
+    validationSchema: validationSchema,
+    validateOnChange: false
+  })
+
+
+
+
 
 
 
@@ -39,7 +99,6 @@ export default function OrderForm() {
     const newOrderItems = [...orderItems];
     newOrderItems[index][e.target.name] = e.target.value;
     setOrderItems(newOrderItems);
-    console.log(newOrderItems)
   };
 
   const handleAddItem = () => {
@@ -57,7 +116,7 @@ export default function OrderForm() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <h1>Create New Order</h1>
-
+      <form  onSubmit={formik.handleSubmit} >
       <Item>
         <Grid container spacing={2}>
           <Grid xs={12}>
@@ -70,22 +129,32 @@ export default function OrderForm() {
           </Grid>
           <Grid xs={12} md={4}>
             <TextField
-              id="customer"
-              name="customer"
+              id="customerName"
+              name="customerName"
               label="Customer Name"
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.customerName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.customerName && Boolean(formik.errors.customerName)}
+              helperText={formik.touched.customerName && formik.errors.customerName}
             />
           </Grid>
           <Grid xs={12} md={4}>
             <TextField
-              id="occasion"
-              name="occasion"
+              id="orderOccasion"
+              name="orderOccasion"
               label="Order Occasion"
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.orderOccasion}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.orderOccasion && Boolean(formik.errors.orderOccasion)}
+              helperText={formik.touched.orderOccasion && formik.errors.orderOccasion}
             />
           </Grid>
           <Grid xs={12} md={4}>
@@ -96,26 +165,42 @@ export default function OrderForm() {
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.orderStatus}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.orderStatus && Boolean(formik.errors.orderStatus)}
+              helperText={formik.touched.orderStatus && formik.errors.orderStatus}
+            
             />
           </Grid>
           <Grid xs={12} md={4}>
             <TextField
-              id="phoneNumber"
-              name="phoneNumber"
+              id="customerPhone"
+              name="customerPhone"
               label="Customer Phone Number"
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.customerPhone}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.customerPhone && Boolean(formik.errors.customerPhone)}
+              helperText={formik.touched.customerPhone && formik.errors.customerPhone}
             />
           </Grid>
           <Grid xs={12} md={4}>
             <TextField
-              id="email"
-              name="email"
+              id="customerEmail"
+              name="customerEmail"
               label="Customer e-mail"
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.customerEmail}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.customerEmail && Boolean(formik.errors.customerEmail)}
+              helperText={formik.touched.customerEmail && formik.errors.customerEmail}
             />
           </Grid>
 
@@ -132,6 +217,14 @@ export default function OrderForm() {
                     fullWidth
                     margin="normal"
                     variant="standard"
+                    id="dueDate"
+                    name="dueDate"
+
+                    value={formik.values.dueDate}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.dueDate && Boolean(formik.errors.dueDate)}
+                    helperText={formik.touched.dueDate && formik.errors.dueDate}
 
                     {...params} />} />
             </LocalizationProvider>
@@ -159,6 +252,12 @@ export default function OrderForm() {
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.recipient}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.recipient && Boolean(formik.errors.recipient)}
+              helperText={formik.touched.recipient && formik.errors.recipient}
+              
             />
           </Grid>
           <Grid xs={12} md={4}>
@@ -169,6 +268,11 @@ export default function OrderForm() {
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.recipientPhone}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.recipientPhone && Boolean(formik.errors.recipientPhone)}
+              helperText={formik.touched.recipientPhone && formik.errors.recipientPhone}
             />
           </Grid>
 
@@ -180,6 +284,11 @@ export default function OrderForm() {
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.delivery}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.delivery && Boolean(formik.errors.delivery)}
+              helperText={formik.touched.delivery && formik.errors.delivery}
             />
           </Grid>
           <Grid xs={12} md={12}>
@@ -190,6 +299,11 @@ export default function OrderForm() {
               margin="normal"
               variant="standard"
               fullWidth
+              value={formik.values.deliveryAddress}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.deliveryAddress && Boolean(formik.errors.deliveryAddress)}
+              helperText={formik.touched.deliveryAddress && formik.errors.deliveryAddress}
             />
           </Grid>
           <Grid xs={12}>
@@ -234,7 +348,7 @@ export default function OrderForm() {
                 />
 
               </Grid>
-              <Grid xs={1} md={1}>
+              <Grid xs={4} md={1}>
                 <TextField
                   name="qty"
                   id={`qty${index}`}
@@ -248,7 +362,7 @@ export default function OrderForm() {
                 />
               </Grid>
 
-              <Grid xs={1} md={2}>
+              <Grid xs={4} md={2}>
                 <TextField
                   name="price"
                   id={`price${index}`}
@@ -265,7 +379,7 @@ export default function OrderForm() {
                 />
               </Grid>
 
-              <Grid xs={1} md={1}>
+              <Grid xs={4} md={1}>
                 <Button type="button" width='100%' onClick={() => handleRemoveItem(index)}>
                   Remove
                 </Button>
@@ -288,7 +402,13 @@ export default function OrderForm() {
 
           <Grid xs={12}>
             <Divider />
-            <Button type="submit">Submit Order</Button>
+            <Button type="submit" onSubmit={formik.handleSubmit}>Submit Order</Button>
+            {showModal && (
+            <div>
+              <p>{modalMessage}</p>
+              <Button variant="outlined" onClick={() => setShowModal(false)}>Finish</Button>
+            </div>
+          )}
           </Grid>
 
 
@@ -298,6 +418,7 @@ export default function OrderForm() {
 
         </Grid>
       </Item>
+      </form>
     </Box>
   );
 }

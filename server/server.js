@@ -111,7 +111,7 @@ app.get('/api/customers', async (req, res) => {
 app.get('/api/customers/:id', async (req, res) => {
   try {
     const customer = await Customer.findById(req.params.id);
-    if (!customer) return res.status(404).send('Item not found');
+    if (!customer) return res.status(404).send('Customer not found');
     res.send(customer);
   } catch (error) {
     res.status(500).send(error);
@@ -157,6 +157,89 @@ app.delete('/api/customers/:id', async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+
+
+
+
+
+
+//API for orders
+
+const Order=require('./models/order')
+
+// GET all orders
+app.get('/api/orders', async (req, res) => {
+  try {
+    const order = await Order.find();
+    res.send(order);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// GET a single order by ID
+app.get('/api/orders/:id', async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).send('Order not found');
+    res.send(order);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// POST a new order
+app.post('/api/orders', async (req, res) => {
+  try {
+    const order = new Order({
+      customerName: req.body.customerName,
+      orderStatus: req.body.orderStatus,
+      orderOccasion: req.body.orderOccasion,
+      customerPhone: req.body.customerPhone,
+      customerEmail:req.body.customerEmail,
+      dueDate:req.body.dueDate,
+      recipient: req.body.recipient,
+      recipientPhone:req.body.recipientPhone,
+      delivery:req.body.delivery,
+      deliveryAddress:req.body.deliveryAddress,
+
+
+    });
+    await order.save();
+    res.send(order);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// PUT (update) an existing order by ID
+app.put('/api/orders/:id', async (req, res) => {
+  try {
+    const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!order) return res.status(404).send('Order not found');
+    res.send(order);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// DELETE an order by ID
+app.delete('/api/orders/:id', async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order) return res.status(404).send('Order not found');
+    res.send(order);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+
+
+
 
 
 
