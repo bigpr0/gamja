@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-
-import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -9,6 +10,14 @@ import * as Yup from "yup"
 import axios from 'axios';
 
 
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
 
 
 const NewUserForm = () => {
@@ -63,7 +72,8 @@ const NewUserForm = () => {
 
   return (
 
-    <Box display="flex" alignItems="left" flexDirection={"column"}>
+    <Box display="flex" alignItems="center" flexDirection={"column"}>
+      <Item>
       <h1>Add New Customer</h1>
       <Divider />
       <div className='newform'>
@@ -119,6 +129,8 @@ const NewUserForm = () => {
             helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
           />
           <br></br>
+          <Divider />
+          <br></br>
           <Button type="submit" variant="outlined" margin="normal" size="large" onSubmit={formik.handleSubmit}>Submit</Button>
           {showModal && (
             <div>
@@ -129,6 +141,7 @@ const NewUserForm = () => {
 
         </form>
       </div>
+      </Item>
     </Box>
   );
 };

@@ -1,50 +1,43 @@
-import * as React from 'react';
+import React, {useState,useEffect} from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import axios from "axios";
-import { useDemoData } from '@mui/x-data-grid-generator';
-
-
-
-
-const VISIBLE_FIELDS = ['firstName', 'lastName', 'email', 'phoneNumber'];
-
 
 const columns = [
-    { field: '_id', headerName: 'ID', width: 90 },
+    //{ field: '_id', headerName: 'ID' },
     {
-      field: 'firstName',
-      headerName: 'First name',
+      field: 'customerName',
+      headerName: 'Customer name',
       width: 200,
       editable: true,
     },
     {
-      field: 'lastName',
-      headerName: 'Last name',
+      field: 'recipient',
+      headerName: 'Recipient',
       width: 200,
       editable: true,
     },
     {
-      field: 'email',
-      headerName: 'email',
+      field: 'deliveryAddress',
+      headerName: 'deliveryAddress',
       width:250,
       editable: true,
     },
     {
-        field: 'phoneNumber',
-        headerName: 'Phone Number',
+        field: 'orderStatus',
+        headerName: 'Order Status',
         width: 200,
         editable: true,
     },
   ];
 
-export default function Customers() {
+export default function Orders() {
 
-    const [data, setData] = React.useState([]);
+    const [data, setData] = useState([]);
 
-    React.useEffect(() => {
+    useEffect(() => {
       axios
-        .get("http://localhost:5000/api/customers")
+        .get("http://localhost:5000/api/orders")
         .then(response => {
           setData(response.data);
         })

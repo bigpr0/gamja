@@ -1,14 +1,15 @@
 import './App.css';
 import OrderForm from './components/OrderForm';
 import NewUserForm from './components/NewUserForm';
-import ResponsiveDrawer from './components/ResponsiveDrawer';
 import HomeCalendar from './components/HomeCalendar';
+import Orders from './components/Orders';
 
 
 
 import {Routes,Route} from "react-router-dom";
 import Customers from './components/Customers';
 import { createTheme,ThemeProvider } from '@mui/material';
+import SideBar from './components/SideBar';
 
 
 
@@ -27,12 +28,12 @@ function App() {
 
       
       <Routes>
-        <Route element={<ResponsiveDrawer/>}>
+        <Route element={<SideBar/>}>
           <Route path="/" element={<HomeCalendar/>}/>
           <Route path="/addCustomer" element={<NewUserForm/>}/>
           <Route path="/customers" element={<Customers/>}/>
           <Route path="/neworder" element={<OrderForm/>}/>
-          <Route path="/orders" />
+          <Route path="/orders" element={<Orders/>}/>
         </Route>
       </Routes>
 

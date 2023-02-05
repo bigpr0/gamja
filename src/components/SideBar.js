@@ -81,7 +81,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const drawerWidth = 240;
 
-function ResponsiveDrawer(props) {
+function SideBar(props) {
 
   const location = useLocation();
   const path = location.pathname;
@@ -280,4 +280,4 @@ function ResponsiveDrawer(props) {
 }
 
 
-export default ResponsiveDrawer;
+export default SideBar;
