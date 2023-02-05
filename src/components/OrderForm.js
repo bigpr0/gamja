@@ -431,7 +431,7 @@ const getValue = (data, id, key) => {
 
             {orderItems.map((item, index) => (
 
-              <Box sx={{flexGrow: 1, display:'flex'}} key={index}>
+              <Box sx={{width: '100%',flexGrow:"1",display:"flex" }} key={index}>
                 <Grid xs={12} md={8} xl={8}>
                   <TextField
                     name="name"
