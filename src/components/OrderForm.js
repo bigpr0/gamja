@@ -7,7 +7,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import { useFormik } from "formik"
+import { useFormik} from "formik"
 import * as Yup from "yup"
 import axios from 'axios';
 //Datetime picker
@@ -62,16 +62,13 @@ export default function OrderForm() {
       recipientPhone: "",
       delivery: "",
       deliveryAddress: "",
-      orderItems: {
-        name: "",
-        qty: "",
-        price:"",
-      },
+      orderItems: [],
 
 
     },
     onSubmit: (values) => {
-      console.log("hello")
+      values.orderItems=[...orderItems]
+      values.dueDate=value
       console.log(JSON.stringify(values))
       axios.post('http://localhost:5000/api/orders', values)
         .then(res => {
@@ -116,7 +113,13 @@ export default function OrderForm() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <h1>Create New Order</h1>
-      <form  onSubmit={formik.handleSubmit} >
+      <form 
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+        }
+      }}
+      onSubmit={formik.handleSubmit} >
       <Item>
         <Grid container spacing={2}>
           <Grid xs={12}>
@@ -324,7 +327,7 @@ export default function OrderForm() {
           <Grid xs={1}>
             <Button
               align="right"
-
+              fullWidth
               type="button" onClick={handleAddItem}>
               Add
             </Button>
@@ -380,7 +383,7 @@ export default function OrderForm() {
               </Grid>
 
               <Grid xs={4} md={1}>
-                <Button type="button" width='100%' onClick={() => handleRemoveItem(index)}>
+                <Button type="button" fullWidth onClick={() => handleRemoveItem(index)}>
                   Remove
                 </Button>
               </Grid>

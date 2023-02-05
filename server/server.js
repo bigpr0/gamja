@@ -203,6 +203,7 @@ app.post('/api/orders', async (req, res) => {
       recipientPhone:req.body.recipientPhone,
       delivery:req.body.delivery,
       deliveryAddress:req.body.deliveryAddress,
+      orderItems:req.body.orderItems
 
 
     });
