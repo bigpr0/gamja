@@ -5,7 +5,6 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 
 
-
 const columns = [
     {
       field: 'firstName',
@@ -41,7 +40,7 @@ export default function Customers() {
 
     useEffect(() => {
       axios
-        .get("https://gamja-server-production.up.railway.app/api/customers")
+        .get(process.env.REACT_APP_serverURL+"/api/customers",{cache:true})
         .then(response => {
           setData(response.data);
         })

@@ -25,8 +25,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
 
-
-
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -69,7 +67,7 @@ export default function EditOrderForm() {
   const [initData, setInitData] = useState([]);
 
   useEffect(() => {
-    axios.get(`https://gamja-server-production.up.railway.app/api/orders/${id}`)
+    axios.get(process.env.REACT_APP_serverURL+`/api/orders/${id}`)
       .then(result => {
         setInitData(result.data);
 
@@ -134,7 +132,7 @@ export default function EditOrderForm() {
       values.dueDate = value
       values.customerId=customerId
       console.log(JSON.stringify(values))
-      axios.put(`https://gamja-server-production.up.railway.app/api/orders/${id}`, values)
+      axios.put(process.env.REACT_APP_serverURL+`/api/orders/${id}`, values)
         .then(res => {
           console.log(res);
           setModalMessage("Success: Data retrieved successfully.");

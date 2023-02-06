@@ -164,7 +164,7 @@ function SideBar(props) {
         <Divider />
 
         
-        <ListItem key='map' disablePadding component={Link} to={'/map'} button selected={"/map" === path}>
+        {/* <ListItem key='map' disablePadding component={Link} to={'/map'} button selected={"/map" === path}>
           <ListItemButton>
             <ListItemIcon>
               <RouteIcon/>
@@ -174,7 +174,7 @@ function SideBar(props) {
             </ListItemText>
           </ListItemButton>
         </ListItem>
-      
+       */}
       
 
       </List>
@@ -217,7 +217,7 @@ function SideBar(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Search>
+          {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -225,7 +225,7 @@ function SideBar(props) {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />
-          </Search>
+          </Search> */}
   
 
      

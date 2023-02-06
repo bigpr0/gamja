@@ -8,14 +8,13 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 
 import axios from "axios";
 
-
 export default function HomeCalendar() {
 
   const [data, setData] = useState([]);
 
   useEffect(() => {
     axios
-      .get("https://gamja-server-production.up.railway.app/api/orders")
+      .get("https://gamja-server-production.up.railway.app/api/orders",{cache:true})
       .then(response => {
         setData(response.data);
       })

@@ -57,7 +57,7 @@ export default function Orders() {
 
     useEffect(() => {
       axios
-        .get("https://gamja-server-production.up.railway.app/api/orders")
+        .get(process.env.REACT_APP_serverURL+"/api/orders",{cache:true})
         .then(response => {
           setData(response.data);
         })

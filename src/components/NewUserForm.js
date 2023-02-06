@@ -9,8 +9,6 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 import axios from 'axios';
 
-
-
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -30,7 +28,7 @@ const NewUserForm = () => {
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().trim().required('First name is required'),
     lastName: Yup.string().trim().required('Last name is required'),
-    email: Yup.string().email('Invalid email address').required('Email is required'),
+    //email: Yup.string().email('Invalid email address').required('Email is required'),
     phoneNumber: Yup.string().matches(phoneRegExp, 'Phone number is not valid').required('Phone number is required')
   });
 
@@ -44,7 +42,7 @@ const NewUserForm = () => {
     },
     onSubmit: (values) => {
       console.log(JSON.stringify(values))
-      axios.post('https://gamja-server-production.up.railway.app/api/customers', values)
+      axios.post(process.env.REACT_APP_serverURL+'/api/customers', values)
         .then(res => {
           console.log(res);
           setModalMessage("Success: Data retrieved successfully.");

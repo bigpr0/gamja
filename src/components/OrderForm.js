@@ -18,13 +18,16 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Typography } from '@mui/material';
-
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -60,14 +63,14 @@ export default function OrderForm() {
   const [customerId, setCustomerId] = useState("");
   const [customerName, setCustomerName] = useState("");
 
-  const phoneRegExp = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3,4})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+  //const phoneRegExp = /^\s*(?:\+s?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3,4})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
 
 
 
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('https://gamja-server-production.up.railway.app/api/customers')
+    axios.get(process.env.REACT_APP_serverURL + '/api/customers', { cache: true })
       .then(response => {
         setData(response.data);
       })
@@ -84,6 +87,8 @@ export default function OrderForm() {
   //form validation
   const validationSchema = Yup.object().shape({
     customerName: Yup.string().required('Customer name is required'),
+
+    delivery: Yup.string().required('Delivery/Pickup is required'),
     //dueDate: Yup.string().required('Due Date is required'),
 
     //recipient:Yup.string().required('Recipeint is required'),
@@ -94,7 +99,7 @@ export default function OrderForm() {
 
   const formik = useFormik({
     initialValues: {
-      customerId:"",
+      customerId: "",
       customerName: "",
       orderStatus: "",
       orderOccasion: "",
@@ -112,10 +117,10 @@ export default function OrderForm() {
     onSubmit: (values) => {
       values.orderItems = [...orderItems]
       values.dueDate = value
-      values.customerId=customerId
+      values.customerId = customerId
       values.customerName = customerName
       console.log(JSON.stringify(values))
-      axios.post('https://gamja-server-production.up.railway.app/api/orders', values)
+      axios.post(process.env.REACT_APP_serverURL + '/api/orders', values)
         .then(res => {
           console.log(res);
           setModalMessage("Success: Data retrieved successfully.");
@@ -156,22 +161,22 @@ export default function OrderForm() {
   };
 
   const handleCustomerChange = (e) => {
-    
+
     setCustomerId(e.target.value)
-    setCustomerName(getValue(data,e.target.value,'firstName')+" "+getValue(data,e.target.value,'lastName'))
-    formik.setFieldValue('customerPhone',getValue(data,e.target.value,'phoneNumber'));
-    formik.setFieldValue('customerEmail',getValue(data,e.target.value,'email'));
+    setCustomerName(getValue(data, e.target.value, 'firstName') + " " + getValue(data, e.target.value, 'lastName'))
+    formik.setFieldValue('customerPhone', getValue(data, e.target.value, 'phoneNumber'));
+    formik.setFieldValue('customerEmail', getValue(data, e.target.value, 'email'));
 
     formik.handleChange(e)
 
   }
 
 
-  
-const getValue = (data, id, key) => {
-  const item = data.find(item => item._id === id);
-  return item ? item[key] : undefined;
-};
+
+  const getValue = (data, id, key) => {
+    const item = data.find(item => item._id === id);
+    return item ? item[key] : undefined;
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -203,14 +208,6 @@ const getValue = (data, id, key) => {
                   fullWidth
                   variant='standard'
                   value={formik.values.customerName}
-                  // onChange={(e) => {
-                  //   formik.handleChange(e);
-                  //   handleCustomerChange(e);
-                  // }}
-                  // onBlur={(e) => {
-                  //   formik.handleChange(e);
-                  //   handleCustomerChange(e);
-                  // }}
                   onBlur={
                     handleCustomerChange
                   }
@@ -224,19 +221,6 @@ const getValue = (data, id, key) => {
                 </Select>
 
               </FormControl>
-              {/* <TextField
-                id="customerName"
-                name="customerName"
-                label="Customer Name"
-                margin="normal"
-                variant="standard"
-                fullWidth
-                value={formik.values.customerName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.customerName && Boolean(formik.errors.customerName)}
-                helperText={formik.touched.customerName && formik.errors.customerName}
-              /> */}
             </Grid>
             <Grid xs={12} md={4}>
               <TextField
@@ -386,6 +370,19 @@ const getValue = (data, id, key) => {
                 error={formik.touched.delivery && Boolean(formik.errors.delivery)}
                 helperText={formik.touched.delivery && formik.errors.delivery}
               />
+{/* 
+
+              <FormControl>
+                <FormLabel id="demo-row-radio-buttons-group-label">Delivery/Pickup</FormLabel>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                >
+                  <FormControlLabel value="Delivery" control={<Radio />} label="Delivery" />
+                  <FormControlLabel value="Pickup" control={<Radio />} label="Pickup" />
+                </RadioGroup>
+              </FormControl> */}
             </Grid>
             <Grid xs={12} md={12}>
               <TextField
@@ -431,7 +428,7 @@ const getValue = (data, id, key) => {
 
             {orderItems.map((item, index) => (
 
-              <Box sx={{width: '100%',flexGrow:"1",display:"flex" }} key={index}>
+              <Box sx={{ width: '100%', flexGrow: "1", display: "flex" }} key={index}>
                 <Grid xs={12} md={8} xl={8}>
                   <TextField
                     name="name"

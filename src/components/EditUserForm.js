@@ -40,7 +40,7 @@ const EditUserForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get(`https://gamja-server-production.up.railway.app/api/customers/${id}`);
+        const result = await axios.get(process.env.REACT_APP_serverURL+`/api/customers/${id}`);
         setData(result.data);
 
         formik.setFieldValue('firstName',result.data.firstName);
@@ -77,7 +77,7 @@ const EditUserForm = () => {
     },
     onSubmit: (values) => {
       console.log(JSON.stringify(values))
-      axios.put(`https://gamja-server-production.up.railway.app/api/customers/${id}`, values)
+      axios.put(process.env.REACT_APP_serverURL+`/api/customers/${id}`, values)
         .then(res => {
           console.log(res);
           setModalMessage("Success: Data retrieved successfully.");
